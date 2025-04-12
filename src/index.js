@@ -24,7 +24,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const routes = require("./routes");
+const routes = require('./routes/slackTrackRoutes');
 
 dotenv.config();
 

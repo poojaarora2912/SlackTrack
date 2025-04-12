@@ -1,5 +1,5 @@
 const express = require("express");
-const { fetchSlackData, fetchSlackDataUsingQuery } = require("./slackService");
+const { fetchSlackData, fetchSlackDataUsingQuery } = require("../slackService");
 
 const router = express.Router();
 
