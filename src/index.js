@@ -8,19 +8,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Add this authentication bypass middleware
+
 app.use((req, res, next) => {
-  // Check for API key in query parameter
-  if (req.query.key === "2912") {
-    return next();
-  }
-  // Continue with normal flow
-  next();
-});
+  console.log(req.path, req.method)
+  next()
+})
+
+// Add this authentication bypass middleware
+// app.use((req, res, next) => {
+//   // Check for API key in query parameter
+//   if (req.query.key === "2912") {
+//     return next();
+//   }
+//   // Continue with normal flow
+//   next();
+// });
 
 app.use("/api", routes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
