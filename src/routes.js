@@ -3,6 +3,11 @@ const { fetchSlackData, fetchSlackDataUsingQuery } = require("./slackService");
 
 const router = express.Router();
 
+
+router.get("/", (req, res) => {
+  res.send("Hello from SlackTrack!");
+});
+
 router.post("/summary", async (req, res) => {
   const { query, channelId, startDate, endDate } = req.body;
 
