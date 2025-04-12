@@ -8,6 +8,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Add this authentication bypass middleware
+app.use((req, res, next) => {
+  // Check for API key in query parameter
+  if (req.query.key === process.env.API_SECRET) {
+    return next();
+  }
+  // Continue with normal flow
+  next();
+});
+
 app.use("/api", routes);
 
 const PORT = process.env.PORT || 5000;
