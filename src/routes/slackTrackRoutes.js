@@ -5,7 +5,10 @@ const router = express.Router();
 
 
 router.post("/slacktrack", (req, res) => {
-  res.send("Hello from SlackTrack!");
+
+  const { query } = req.body;
+
+  res.send("Hello from SlackTrack!", query);
 });
 
 router.post("/summary", async (req, res) => {
