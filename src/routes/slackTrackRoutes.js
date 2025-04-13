@@ -33,11 +33,13 @@ router.post("/summary", async (req, res) => {
 });
 
 router.post("/query-summary", async (req, res) => {
-  const { query, channelId, channelName } = req.body;
+  const { query } = req.body;
   console.log("Query:", query);
+  const channelId = "";
+  const channelName = "slack_track";
   console.log("Channel ID:", channelId);
   console.log("Channel Name:", channelName);
-  
+
   try {
     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
     console.log("Query-Based Summary Fetched:", summary);
