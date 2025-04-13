@@ -76,9 +76,14 @@ router.post("/query-summary", async (req, res) => {
     console.log("Query-Based Summary Fetched:", summary);
 
     // Step 3: Send the summary back to Slack using the response_url
-    await axios.post(responseUrl, {
-      response_type: "in_channel", // or "ephemeral" if only user should see
-      text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+    // await axios.post(responseUrl, {
+    //   response_type: "in_channel", // or "ephemeral" if only user should see
+    //   text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+    // });
+
+    res.send({
+      message: "Done processing!",
+      query,
     });
   } catch (error) {
     console.error("Error:", error);

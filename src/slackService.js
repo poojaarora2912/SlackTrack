@@ -135,7 +135,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
   }
 
   const sumary = summarizeMessages(allMessages);
-
+  console.log("Summary:", sumary);
   return sumary;
 };
 
