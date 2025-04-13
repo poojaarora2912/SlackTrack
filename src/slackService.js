@@ -170,7 +170,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
           page,
           count: 10,
         },
-        timeout: 5000, // 5 seconds timeout
+        timeout: 15000, // 15 seconds timeout
       });
 
       if (!response.data.ok) {
@@ -200,7 +200,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
   }
 
   console.log("All Messages:", allMessages);
-  
+
   const summary = await summarizeMessages(allMessages);
   console.log("Summary:", summary);
   return summary;
