@@ -1,4 +1,6 @@
 const express = require("express");
+const axios = require("axios");
+
 const { fetchSlackData, fetchSlackDataUsingQuery } = require("../slackService");
 
 const router = express.Router();
@@ -52,10 +54,11 @@ router.post("/summary", async (req, res) => {
 // });
 
 router.post("/query-summary", async (req, res) => {
+  console.log("Received Request:", req.body);
   const query = req.body.text;
   const responseUrl = req.body.response_url;
-  const channelId = req.body.channel_id;
-  const channelName = req.body.channel_name;
+  const channelId = "1234";
+  const channelName = "slack_track";
 
   console.log("Query:", query);
   console.log("Channel ID:", channelId);
