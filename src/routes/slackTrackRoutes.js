@@ -53,6 +53,40 @@ router.post("/summary", async (req, res) => {
 //   }
 // });
 
+// router.post("/query-summary", async (req, res) => {
+//   console.log("Received Request:", req.body);
+//   const query = req.body.text;
+//   const responseUrl = req.body.response_url;
+//   const channelId = "1234";
+//   const channelName = "slack_track";
+
+//   console.log("Query:", query);
+//   console.log("Channel ID:", channelId);
+//   console.log("Channel Name:", channelName);
+//   console.log("Response URL:", responseUrl);
+
+//   try {
+//     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
+//     console.log("Query-Based Summary Fetched:", summary);
+
+//     await axios.post(responseUrl, {
+//       response_type: "in_channel",
+//       text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+//     });
+
+//     res.send({
+//       message: "Done processing!",
+//       query,
+//     });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     await axios.post(responseUrl, {
+//       response_type: "ephemeral",
+//       text: `❌ Failed to fetch summary for "${query}". Please try again later.`,
+//     });
+//   }
+// });
+
 router.post("/query-summary", async (req, res) => {
   console.log("Received Request:", req.body);
   const query = req.body.text;
@@ -65,36 +99,39 @@ router.post("/query-summary", async (req, res) => {
   console.log("Channel Name:", channelName);
   console.log("Response URL:", responseUrl);
 
-  // Step 1: Respond to Slack immediately
-  // res.status(200).send({
-  //   text: `🕐 Processing your query: "${query}"... You'll get the summary shortly.`,
-  // });
+  // ✅ Step 1: Immediately respond to Slack
+  res.status(200).send({
+    response_type: "ephemeral",
+    text: `🕐 Processing your query: *${query}*... You'll get the summary shortly.`,
+  });
 
+  // ✅ Step 2: Continue processing in background
   try {
-    // Step 2: Process the query in the background
     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
     console.log("Query-Based Summary Fetched:", summary);
 
-    // Step 3: Send the summary back to Slack using the response_url
-    // await axios.post(responseUrl, {
-    //   response_type: "in_channel", // or "ephemeral" if only user should see
-    //   text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
-    // });
-
-    res.send({
-      message: "Done processing!",
-      query,
+    // ✅ Step 3: Send the result back via response_url
+    await axios.post(responseUrl, {
+      response_type: "in_channel", // or "ephemeral"
+      text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   } catch (error) {
-    console.error("Error:", error);
-
-    // Optional: notify the user about the failure
+    console.error("❌ Error while processing summary:", error.message);
     await axios.post(responseUrl, {
       response_type: "ephemeral",
-      text: `❌ Failed to fetch summary for "${query}". Please try again later.`,
+      text: `❌ Failed to fetch summary for *${query}*. Please try again later.`,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   }
 });
+
 
 
 module.exports = router;
