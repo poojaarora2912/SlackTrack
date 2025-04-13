@@ -134,7 +134,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
     console.error("Error fetching messages:", error.message);
   }
 
-  const sumary = summarizeMessages(allMessages);
+  const sumary = await summarizeMessages(allMessages);
   console.log("Summary:", sumary);
   return sumary;
 };
