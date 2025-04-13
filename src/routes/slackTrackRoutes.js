@@ -5,8 +5,8 @@ const router = express.Router();
 
 
 router.post("/slacktrack", (req, res) => {
-
-  const { query } = req.body;
+  console.log("Received Request:", req.body);
+  const { query } = req.body.text;
   console.log("Received Query:", query);
   res.send({
     message: "Hello from SlackTrack!",
