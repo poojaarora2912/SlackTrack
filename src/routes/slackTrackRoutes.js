@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/slacktrack", (req, res) => {
   console.log("Received Request:", req.body);
-  const { query } = req.body.text;
+  const query = req.body.text;
   console.log("Received Query:", query);
   res.send({
     message: "Hello from SlackTrack!",
@@ -33,7 +33,7 @@ router.post("/summary", async (req, res) => {
 });
 
 router.post("/query-summary", async (req, res) => {
-  const { query } = req.body;
+  const query = req.body.text;
   console.log("Query:", query);
   const channelId = "";
   const channelName = "slack_track";
