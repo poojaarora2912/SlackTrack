@@ -169,8 +169,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
           query,
           page,
           count: 10,
-        },
-        timeout: 15000, // 15 seconds timeout
+        }
       });
 
       if (!response.data.ok) {
