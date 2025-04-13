@@ -87,84 +87,84 @@ router.post("/summary", async (req, res) => {
 //   }
 // });
 
-// router.post("/query-summary", async (req, res) => {
-//   console.log("Received Request:", req.body);
-//   const query = req.body.text;
-//   const responseUrl = req.body.response_url;
-//   const channelId = "1234";
-//   const channelName = "slack_track";
-
-//   console.log("Query:", query);
-//   console.log("Channel ID:", channelId);
-//   console.log("Channel Name:", channelName);
-//   console.log("Response URL:", responseUrl);
-
-//   // ✅ Step 1: Immediately respond to Slack
-//   res.status(200).send({
-//     response_type: "ephemeral",
-//     text: `🕐 Processing your query: *${query}*... You'll get the summary shortly.`,
-//   });
-
-//   // ✅ Step 2: Continue processing in background
-//   try {
-//     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
-//     console.log("Query-Based Summary Fetched:", summary);
-
-//     // ✅ Step 3: Send the result back via response_url
-//     await axios.post(responseUrl, {
-//       response_type: "in_channel", // or "ephemeral"
-//       text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
-//     }, {
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//   } catch (error) {
-//     console.error("❌ Error while processing summary:", error.message);
-//     await axios.post(responseUrl, {
-//       response_type: "ephemeral",
-//       text: `❌ Failed to fetch summary for *${query}*. Please try again later.`,
-//     }, {
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-//   }
-// });
-
 router.post("/query-summary", async (req, res) => {
   console.log("Received Request:", req.body);
   const query = req.body.text;
   const responseUrl = req.body.response_url;
+  const channelId = "1234";
+  const channelName = "slack_track";
 
   console.log("Query:", query);
+  console.log("Channel ID:", channelId);
+  console.log("Channel Name:", channelName);
   console.log("Response URL:", responseUrl);
 
-  // Step 1: Respond immediately to Slack
+  // ✅ Step 1: Immediately respond to Slack
   res.status(200).send({
     response_type: "ephemeral",
-    text: `🕐 Got your request: *${query}*. Testing response URL now...`,
+    text: `🕐 Processing your query: *${query}*... You'll get the summary shortly.`,
   });
 
-  // Step 2: Send a dummy message back to Slack
+  // ✅ Step 2: Continue processing in background
   try {
+    const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
+    console.log("Query-Based Summary Fetched:", summary);
+
+    // ✅ Step 3: Send the result back via response_url
     await axios.post(responseUrl, {
       response_type: "in_channel", // or "ephemeral"
-      text: `✅ This is a test message sent via response_url!\nQuery received: *${query}*`,
+      text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
     }, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-
-    console.log("✅ Successfully sent test message to response_url.");
   } catch (error) {
-    console.error("❌ Error sending test message to response_url:", error.message);
-    if (error.response) {
-      console.error("Slack error response:", error.response.data);
-    }
+    console.error("❌ Error while processing summary:", error.message);
+    await axios.post(responseUrl, {
+      response_type: "ephemeral",
+      text: `❌ Failed to fetch summary for *${query}*. Please try again later.`,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 });
+
+// router.post("/query-summary", async (req, res) => {
+//   console.log("Received Request:", req.body);
+//   const query = req.body.text;
+//   const responseUrl = req.body.response_url;
+
+//   console.log("Query:", query);
+//   console.log("Response URL:", responseUrl);
+
+//   // Step 1: Respond immediately to Slack
+//   res.status(200).send({
+//     response_type: "ephemeral",
+//     text: `🕐 Got your request: *${query}*. Testing response URL now...`,
+//   });
+
+//   // Step 2: Send a dummy message back to Slack
+//   try {
+//     await axios.post(responseUrl, {
+//       response_type: "in_channel", // or "ephemeral"
+//       text: `✅ This is a test message sent via response_url!\nQuery received: *${query}*`,
+//     }, {
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
+
+//     console.log("✅ Successfully sent test message to response_url.");
+//   } catch (error) {
+//     console.error("❌ Error sending test message to response_url:", error.message);
+//     if (error.response) {
+//       console.error("Slack error response:", error.response.data);
+//     }
+//   }
+// });
 
 
 
