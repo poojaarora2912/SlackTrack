@@ -8,7 +8,10 @@ router.post("/slacktrack", (req, res) => {
 
   const { query } = req.body;
 
-  res.send("Hello from SlackTrack!", query);
+  res.send({
+    message: "Hello from SlackTrack!",
+    query,
+  });
 });
 
 router.post("/summary", async (req, res) => {
