@@ -92,6 +92,9 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
     query = `${query} in:${channelName}`;
   }
 
+  console.log("fetchSlackDataUsingQuery Query:", query);
+  console.log("fetchSlackDataUsingQuery Channel ID:", channelId);
+  console.log("fetchSlackDataUsingQuery Channel Name:", channelName);
   console.log("SLACK_TOKEN:", SLACK_TOKEN);
 
   try {
