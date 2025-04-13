@@ -32,22 +32,59 @@ router.post("/summary", async (req, res) => {
   }
 });
 
+// router.post("/query-summary", async (req, res) => {
+//   const query = req.body.text;
+//   console.log("Query:", query);
+//   const channelId = "";
+//   const channelName = "slack_track";
+//   console.log("Channel ID:", channelId);
+//   console.log("Channel Name:", channelName);
+
+//   try {
+//     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
+//     console.log("Query-Based Summary Fetched:", summary);
+
+//     res.status(200).json({ summary });
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).json({ error: "Something went wrong" });
+//   }
+// });
+
 router.post("/query-summary", async (req, res) => {
   const query = req.body.text;
+  const responseUrl = req.body.response_url;
+  const channelId = req.body.channel_id;
+  const channelName = req.body.channel_name;
+
   console.log("Query:", query);
-  const channelId = "";
-  const channelName = "slack_track";
   console.log("Channel ID:", channelId);
   console.log("Channel Name:", channelName);
+  console.log("Response URL:", responseUrl);
+
+  // Step 1: Respond to Slack immediately
+  res.status(200).send({
+    text: `🕐 Processing your query: "${query}"... You'll get the summary shortly.`,
+  });
 
   try {
+    // Step 2: Process the query in the background
     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
     console.log("Query-Based Summary Fetched:", summary);
 
-    res.status(200).json({ summary });
+    // Step 3: Send the summary back to Slack using the response_url
+    await axios.post(responseUrl, {
+      response_type: "in_channel", // or "ephemeral" if only user should see
+      text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+    });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Something went wrong" });
+
+    // Optional: notify the user about the failure
+    await axios.post(responseUrl, {
+      response_type: "ephemeral",
+      text: `❌ Failed to fetch summary for "${query}". Please try again later.`,
+    });
   }
 });
 
