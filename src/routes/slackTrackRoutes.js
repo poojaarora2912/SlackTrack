@@ -66,9 +66,9 @@ router.post("/query-summary", async (req, res) => {
   console.log("Response URL:", responseUrl);
 
   // Step 1: Respond to Slack immediately
-  res.status(200).send({
-    text: `🕐 Processing your query: "${query}"... You'll get the summary shortly.`,
-  });
+  // res.status(200).send({
+  //   text: `🕐 Processing your query: "${query}"... You'll get the summary shortly.`,
+  // });
 
   try {
     // Step 2: Process the query in the background
