@@ -2,8 +2,8 @@ const axios = require("axios");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { fetch } = require("undici");
 
-const SLACK_TOKEN = "xoxp-549216114096-4707499007410-8599683386724-78654ecbc4d4931e58d99f983c8ea8a5";
-const GEMINI_API_KEY = "AIzaSyBrNmMAoEU_LdfCbdyHoaR1XdF7cI0By4s";
+const SLACK_TOKEN = process.env.SLACK_TOKEN;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({
@@ -60,6 +60,7 @@ const fetchSlackData = async (query, channelId, startDate, endDate) => {
     ...(startDate && { oldest: startDate }),
     ...(endDate && {latest: endDate}),
   };
+  console.log("SLACK_TOKEN:", SLACK_TOKEN);
 
   try {
     const response = await axios.get("https://slack.com/api/conversations.history", {
@@ -90,6 +91,8 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
   if(channelName){
     query = `${query} in:${channelName}`;
   }
+
+  console.log("SLACK_TOKEN:", SLACK_TOKEN);
 
   try {
     do {
