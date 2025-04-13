@@ -4,7 +4,7 @@ const { fetchSlackData, fetchSlackDataUsingQuery } = require("../slackService");
 const router = express.Router();
 
 
-router.get("/slacktrack", (req, res) => {
+router.post("/slacktrack", (req, res) => {
   res.send("Hello from SlackTrack!");
 });
 
