@@ -20,7 +20,12 @@ const model = genAI.getGenerativeModel({
 });
 
 const summarizeMessages = async (messages) => {
+
+  console.log("Summarizing messages...");
+
   if (!messages.length) return "No messages found to summarize.";
+
+  console.log("Starting chat session...");
 
   const chatSession = model.startChat({
     generationConfig: {
@@ -31,6 +36,8 @@ const summarizeMessages = async (messages) => {
       responseMimeType: "text/plain",
     },
   });
+
+  console.log("Chat session started.");
 
   const promptText = `Summarize the following Slack messages, categorizing them into:
   - Feature
@@ -46,6 +53,7 @@ const summarizeMessages = async (messages) => {
 
   try {
     const result = await chatSession.sendMessage(promptText);
+    console.log("Generated Summary:");
     return result.response.text();
   } catch (error) {
     console.error("Error generating summary:", error.message);
@@ -173,12 +181,16 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
       const matches = response.data.messages.matches || [];
       let messages = matches;
 
+      console.log("Matches:", matches);
+
       if (!channelName) {
         messages = matches.filter((match) => match.channel.id === channelId);
       }
 
       const allMessagesForChannel = messages.map((match) => match.text);
       allMessages = [...allMessages, ...allMessagesForChannel];
+
+      console.log("All Messages for Channel:", allMessagesForChannel);
 
       page++;
     } while (page <= maxPages);
@@ -187,6 +199,8 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
     console.error("Full error:", error);
   }
 
+  console.log("All Messages:", allMessages);
+  
   const summary = await summarizeMessages(allMessages);
   console.log("Summary:", summary);
   return summary;
