@@ -108,15 +108,18 @@ router.post("/query-summary", async (req, res) => {
     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
     console.log("Query-Based Summary Fetched:", summary);
 
-
-    axios.post(responseUrl, {
-      response_type: "in_channel", // or "ephemeral"
+    router.post(responseUrl, {
+      response_type: "in_channel",
       text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-      },
     });
+    // axios.post(responseUrl, {
+    //   response_type: "in_channel", // or "ephemeral"
+    //   text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+    // }, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
   } catch (error) {
     console.error("❌ Error while processing summary:", error.message);
     await axios.post(responseUrl, {
