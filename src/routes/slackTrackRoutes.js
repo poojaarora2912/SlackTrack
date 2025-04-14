@@ -105,12 +105,14 @@ router.post("/query-summary", async (req, res) => {
   });
 
   try {
-    const slackResponse = await axios.post(responseUrl, {
+    console.log("try block executed!")
+    const slackResponse = await axios.post("https://hooks.slack.com/commands/TG56C3C2U/8771946599824/p7pUHY671Dlnxtd3vlwSIPFG", {
       response_type: "in_channel",
       text: `✅ This is a test message from the server.`,
     }, {
       headers: {
         "Content-Type": "application/json",
+        timeout: 5000,
       },
     });
     
