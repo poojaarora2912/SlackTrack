@@ -89,11 +89,56 @@ router.post("/summary", async (req, res) => {
 //   }
 // });
 
-router.post("/trigger-slack-response", (req, res) => {
+// router.post("/trigger-slack-response", (req, res) => {
 
-  console.log("Received Trigger Request:", req.body);
+//   console.log("Received Trigger Request:", req.body);
 
-  const { responseUrl, message } = req.body;
+//   const { responseUrl, message } = req.body;
+
+//   console.log("Triggering Slack Response:", responseUrl, message);
+
+//   const slackPayload = JSON.stringify({
+//     response_type: "in_channel",
+//     text: message,
+//   });
+
+//   console.log("Slack Payload:", slackPayload);
+
+//   const url = new URL(responseUrl);
+
+//   console.log("Parsed URL:", url);
+
+//   const options = {
+//     hostname: url.hostname,
+//     path: url.pathname + url.search,
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       "Content-Length": Buffer.byteLength(slackPayload),
+//     },
+//   };
+
+//   console.log("Slack Request Options:", options);
+
+//   const slackReq = https.request(options, (slackRes) => {
+//     let data = "";
+//     slackRes.on("data", (chunk) => (data += chunk));
+//     slackRes.on("end", () => {
+//       console.log("✅ Message sent to Slack:", data);
+//       res.status(200).json({ success: true });
+//     });
+//   });
+
+//   slackReq.on("error", (e) => {
+//     console.error("❌ Error sending to Slack:", e.message);
+//     res.status(500).json({ success: false, error: e.message });
+//   });
+
+//   slackReq.write(slackPayload);
+//   slackReq.end();
+// });
+
+async function triggerSlackResponse(responseUrl, message) {
 
   console.log("Triggering Slack Response:", responseUrl, message);
 
@@ -107,7 +152,7 @@ router.post("/trigger-slack-response", (req, res) => {
   const url = new URL(responseUrl);
 
   console.log("Parsed URL:", url);
-
+  
   const options = {
     hostname: url.hostname,
     path: url.pathname + url.search,
@@ -118,25 +163,26 @@ router.post("/trigger-slack-response", (req, res) => {
     },
   };
 
-  console.log("Slack Request Options:", options);
-
-  const slackReq = https.request(options, (slackRes) => {
-    let data = "";
-    slackRes.on("data", (chunk) => (data += chunk));
-    slackRes.on("end", () => {
-      console.log("✅ Message sent to Slack:", data);
-      res.status(200).json({ success: true });
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", (chunk) => (data += chunk));
+      res.on("end", () => {
+        console.log("✅ Slack response sent:", data);
+        resolve(data);
+      });
     });
-  });
 
-  slackReq.on("error", (e) => {
-    console.error("❌ Error sending to Slack:", e.message);
-    res.status(500).json({ success: false, error: e.message });
-  });
+    req.on("error", (err) => {
+      console.error("❌ Error sending Slack message:", err.message);
+      reject(err);
+    });
 
-  slackReq.write(slackPayload);
-  slackReq.end();
-});
+    req.write(slackPayload);
+    req.end();
+  });
+}
+
 
 
 router.post("/query-summary", async (req, res) => {
@@ -162,11 +208,13 @@ router.post("/query-summary", async (req, res) => {
 
     console.log("ready to send message");
 
-    await fetch(`http://localhost:4000/trigger-slack-response`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ responseUrl, message }),
-    });
+    // await fetch(`http://localhost:4000/trigger-slack-response`, {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ responseUrl, message }),
+    // });
+
+    await triggerSlackResponse(responseUrl, message);
 
     console.log("sent message to slack");
     
