@@ -104,24 +104,48 @@ router.post("/query-summary", async (req, res) => {
     text: `🕐 Processing your query: *${query}*... You'll get the summary shortly.`,
   });
 
-  try {
-    console.log("try block executed!")
-    const slackResponse = await axios.post("https://hooks.slack.com/commands/TG56C3C2U/8771946599824/p7pUHY671Dlnxtd3vlwSIPFG", {
-      response_type: "in_channel",
-      text: `✅ This is a test message from the server.`,
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      timeout: 5000,
-    });
-    
-    console.log("Slack Response Data:", slackResponse.data);    
+  fetchSlackDataUsingQuery(query, channelId, channelName)
+    .then((summary) => {
+      
+      console.log("Query-Based Summary Fetched:", summary);
+      console.log("Posting summary to Slack...");
+      console.log("Response URL:", responseUrl);
 
-    console.log("✅ Test message posted to Slack via response_url.");
-  } catch (error) {
-    console.error("❌ Failed to post test message to Slack:", error.message);
-  }
+      axios.post(responseUrl, {
+        response_type: "in_channel",
+        text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+      }, {
+        headers: { "Content-Type": "application/json" },
+      }).then(() => {
+        console.log("✅ Successfully posted summary to Slack");
+      }).catch((err) => {
+        console.error("❌ Failed to post to Slack:", err.message);
+      });
+    })
+    .catch((err) => {
+      console.error("❌ Error in fetchSlackDataUsingQuery:", err.message);
+    });
+
+  // try {
+  //   console.log("try block executed!")
+  //   const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
+
+  //   const slackResponse = await axios.post("https://hooks.slack.com/commands/TG56C3C2U/8771946599824/p7pUHY671Dlnxtd3vlwSIPFG", {
+  //     response_type: "in_channel",
+  //     text: `Here's the summary for *${query}*:\n\n${summary}`,
+  //   }, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     timeout: 5000,
+  //   });
+    
+  //   console.log("Slack Response Data:", slackResponse.data);    
+
+  //   console.log("✅ Test message posted to Slack via response_url.");
+  // } catch (error) {
+  //   console.error("❌ Failed to post test message to Slack:", error.message);
+  // }
 
   // try {
   //   const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
