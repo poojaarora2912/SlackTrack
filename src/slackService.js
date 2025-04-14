@@ -161,48 +161,51 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
   }
 
   try {
-    do {
-      console.log(`Fetching page ${page} for query: ${query}`);
-      const response = await axios.get("https://slack.com/api/search.messages", {
-        headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
-        params: {
-          query,
-          page,
-          count: 10,
-        }
-      });
+    console.log("fetchSlackDataUsingQuery Query:", query);
+    // do {
+    //   console.log(`Fetching page ${page} for query: ${query}`);
+    //   const response = await axios.get("https://slack.com/api/search.messages", {
+    //     headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
+    //     params: {
+    //       query,
+    //       page,
+    //       count: 10,
+    //     }
+    //   });
 
-      if (!response.data.ok) {
-        console.error("Slack API Full Response:", response.data);
-        throw new Error(`Slack API error: ${response.data.error}`);
-      }
+    //   if (!response.data.ok) {
+    //     console.error("Slack API Full Response:", response.data);
+    //     throw new Error(`Slack API error: ${response.data.error}`);
+    //   }
 
-      const matches = response.data.messages.matches || [];
-      let messages = matches;
+    //   const matches = response.data.messages.matches || [];
+    //   let messages = matches;
 
-      console.log("Matches:", matches);
+    //   console.log("Matches:", matches);
 
-      if (!channelName) {
-        messages = matches.filter((match) => match.channel.id === channelId);
-      }
+    //   if (!channelName) {
+    //     messages = matches.filter((match) => match.channel.id === channelId);
+    //   }
 
-      const allMessagesForChannel = messages.map((match) => match.text);
-      allMessages = [...allMessages, ...allMessagesForChannel];
+    //   const allMessagesForChannel = messages.map((match) => match.text);
+    //   allMessages = [...allMessages, ...allMessagesForChannel];
 
-      console.log("All Messages for Channel:", allMessagesForChannel);
+    //   console.log("All Messages for Channel:", allMessagesForChannel);
 
-      page++;
-    } while (page <= maxPages);
+    //   page++;
+    // } while (page <= maxPages);
   } catch (error) {
     console.error("❌ Error fetching messages:", error.message);
     console.error("Full error:", error);
   }
 
   console.log("All Messages:", allMessages);
+  
 
-  const summary = await summarizeMessages(allMessages);
-  console.log("Summary:", summary);
-  return summary;
+  // const summary = await summarizeMessages(allMessages);
+  // console.log("Summary:", summary);
+  return "Successfully fetched messages!";
+  // return summary;
 };
 
 

@@ -99,19 +99,17 @@ router.post("/query-summary", async (req, res) => {
   console.log("Channel Name:", channelName);
   console.log("Response URL:", responseUrl);
 
-  // ✅ Step 1: Immediately respond to Slack
   res.status(200).send({
     response_type: "ephemeral",
     text: `🕐 Processing your query: *${query}*... You'll get the summary shortly.`,
   });
 
-  // ✅ Step 2: Continue processing in background
   try {
     const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
     console.log("Query-Based Summary Fetched:", summary);
 
-    // ✅ Step 3: Send the result back via response_url
-    await axios.post(responseUrl, {
+
+    axios.post(responseUrl, {
       response_type: "in_channel", // or "ephemeral"
       text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
     }, {
