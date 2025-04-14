@@ -1,4 +1,6 @@
 const express = require("express");
+const https = require("https");
+const fetch = require("node-fetch");
 const axios = require("axios");
 
 const { fetchSlackData, fetchSlackDataUsingQuery } = require("../slackService");
@@ -88,9 +90,12 @@ router.post("/summary", async (req, res) => {
 // });
 
 router.post("/trigger-slack-response", (req, res) => {
+
+  console.log("Received Trigger Request:", req.body);
+
   const { responseUrl, message } = req.body;
 
-  console.log("Triggering Slack Response:", responseUrl. message);
+  console.log("Triggering Slack Response:", responseUrl, message);
 
   const slackPayload = JSON.stringify({
     response_type: "in_channel",
@@ -152,7 +157,7 @@ router.post("/query-summary", async (req, res) => {
   });
 
   try {
-    const summary = fetchSlackDataUsingQuery(query, channelId, channelName);
+    const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
     const message = "done processing!";
 
     console.log("ready to send message");
