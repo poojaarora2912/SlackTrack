@@ -202,10 +202,9 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
   console.log("All Messages:", allMessages);
   
 
-  // const summary = await summarizeMessages(allMessages);
-  // console.log("Summary:", summary);
-  return "Successfully fetched messages!";
-  // return summary;
+  const summary = await summarizeMessages(allMessages);
+  console.log("Summary:", summary);
+  return summary;
 };
 
 
