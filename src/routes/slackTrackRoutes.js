@@ -157,7 +157,7 @@ router.post("/query-summary", async (req, res) => {
 
     console.log("ready to send message");
 
-    await fetch(`/trigger-slack-response`, {
+    await fetch(`http://localhost:4000/trigger-slack-response`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ responseUrl, message }),
