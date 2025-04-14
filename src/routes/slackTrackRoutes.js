@@ -3,7 +3,7 @@ const https = require("https");
 const fetch = require("node-fetch");
 const axios = require("axios");
 
-const { fetchSlackData, fetchSlackDataUsingQuery } = require("../slackService");
+const { fetchSlackData, fetchSlackDataUsingQuery, sendDataToChannel } = require("../slackService");
 
 const router = express.Router();
 
@@ -176,7 +176,7 @@ router.post("/query-summary", async (req, res) => {
   console.log("Received Request:", req.body);
   const query = req.body.text;
   const responseUrl = req.body.response_url;
-  const channelId = "1234";
+  const channelId = "C08J6TG41NC";
   const channelName = "slack_track";
 
   console.log("Query:", query);
@@ -195,13 +195,15 @@ router.post("/query-summary", async (req, res) => {
 
     console.log("ready to send message");
 
+    await sendDataToChannel(channelId, summary);
+    console.log("Message sent to channel:", summary);
+    console.log("Triggering Slack Response with message:", message);
+
     // await fetch(`http://localhost:4000/trigger-slack-response`, {
     //   method: "POST",
     //   headers: { "Content-Type": "application/json" },
     //   body: JSON.stringify({ responseUrl, message }),
     // });
-
-    await triggerSlackResponse(responseUrl, summary);
 
     console.log("sent message to slack");
     
