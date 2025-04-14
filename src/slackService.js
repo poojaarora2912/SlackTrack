@@ -184,38 +184,39 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
   }
 
   try {
-    do {
-      console.log(`Fetching page ${page} for query: ${query}`);
-      const response = await axios.get("https://slack.com/api/search.messages", {
-        headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
-        params: {
-          query,
-          page,
-          count: 10,
-        }
-      });
 
-      if (!response.data.ok) {
-        console.error("Slack API Full Response:", response.data);
-        throw new Error(`Slack API error: ${response.data.error}`);
-      }
+    // do {
+    //   console.log(`Fetching page ${page} for query: ${query}`);
+    //   const response = await axios.get("https://slack.com/api/search.messages", {
+    //     headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
+    //     params: {
+    //       query,
+    //       page,
+    //       count: 10,
+    //     }
+    //   });
 
-      const matches = response.data.messages.matches || [];
-      let messages = matches;
+    //   if (!response.data.ok) {
+    //     console.error("Slack API Full Response:", response.data);
+    //     throw new Error(`Slack API error: ${response.data.error}`);
+    //   }
 
-      console.log("Matches:", matches);
+    //   const matches = response.data.messages.matches || [];
+    //   let messages = matches;
 
-      if (!channelName) {
-        messages = matches.filter((match) => match.channel.id === channelId);
-      }
+    //   console.log("Matches:", matches);
 
-      const allMessagesForChannel = messages.map((match) => match.text);
-      allMessages = [...allMessages, ...allMessagesForChannel];
+    //   if (!channelName) {
+    //     messages = matches.filter((match) => match.channel.id === channelId);
+    //   }
 
-      console.log("All Messages for Channel:", allMessagesForChannel);
+    //   const allMessagesForChannel = messages.map((match) => match.text);
+    //   allMessages = [...allMessages, ...allMessagesForChannel];
 
-      page++;
-    } while (page <= maxPages);
+    //   console.log("All Messages for Channel:", allMessagesForChannel);
+
+    //   page++;
+    // } while (page <= maxPages);
   } catch (error) {
     console.error("❌ Error fetching messages:", error.message);
     console.error("Full error:", error);
@@ -223,7 +224,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
 
   const summary = await summarizeMessages(allMessages);
   console.log("Summary:", summary);
-  return summary;
+  return "Sending summary to channel...";
 };
 
 
