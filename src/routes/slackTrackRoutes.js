@@ -135,7 +135,8 @@ router.post("/summary", async (req, res) => {
 // }
 
 async function triggerSlackResponse(responseUrl, message) {
-  console.log("Triggering Slack Response:", responseUrl, message);
+  console.log("Triggering Slack Response to responseUrl:", responseUrl);
+  console.log("message", message);
   
   const payload = {
     response_type: "in_channel",
@@ -200,7 +201,7 @@ router.post("/query-summary", async (req, res) => {
     //   body: JSON.stringify({ responseUrl, message }),
     // });
 
-    await triggerSlackResponse(responseUrl, message);
+    await triggerSlackResponse(responseUrl, summary);
 
     console.log("sent message to slack");
     
