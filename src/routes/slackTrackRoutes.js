@@ -105,32 +105,45 @@ router.post("/query-summary", async (req, res) => {
   });
 
   try {
-    const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
-    console.log("Query-Based Summary Fetched:", summary);
-
-    router.post(responseUrl, {
+    const slackResponse = await axios.post(responseUrl, {
       response_type: "in_channel",
-      text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
-    });
-    // axios.post(responseUrl, {
-    //   response_type: "in_channel", // or "ephemeral"
-    //   text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
-    // }, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    // });
-  } catch (error) {
-    console.error("❌ Error while processing summary:", error.message);
-    await axios.post(responseUrl, {
-      response_type: "ephemeral",
-      text: `❌ Failed to fetch summary for *${query}*. Please try again later.`,
+      text: `✅ This is a test message from the server.`,
     }, {
       headers: {
         "Content-Type": "application/json",
       },
     });
+    
+    console.log("Slack Response Data:", slackResponse.data);    
+
+    console.log("✅ Test message posted to Slack via response_url.");
+  } catch (error) {
+    console.error("❌ Failed to post test message to Slack:", error.message);
   }
+
+  // try {
+  //   const summary = await fetchSlackDataUsingQuery(query, channelId, channelName);
+  //   console.log("Query-Based Summary Fetched:", summary);
+
+  //   axios.post(responseUrl, {
+  //     response_type: "in_channel", // or "ephemeral"
+  //     text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
+  //   }, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  // } catch (error) {
+  //   console.error("❌ Error while processing summary:", error.message);
+  //   await axios.post(responseUrl, {
+  //     response_type: "ephemeral",
+  //     text: `❌ Failed to fetch summary for *${query}*. Please try again later.`,
+  //   }, {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  // }
 });
 
 // router.post("/query-summary", async (req, res) => {
