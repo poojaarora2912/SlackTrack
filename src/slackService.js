@@ -48,7 +48,7 @@ const summarizeMessages = async (messages) => {
   - Number of Defects
   - Additional Notes.
   
-  I want the response to be formal and concise in HTML format.
+  I want the response to be in points and in a formal tone.
   Messages:\n\n${messages.join("\n")}`;
 
   try {
@@ -185,38 +185,38 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
 
   try {
 
-    // do {
-    //   console.log(`Fetching page ${page} for query: ${query}`);
-    //   const response = await axios.get("https://slack.com/api/search.messages", {
-    //     headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
-    //     params: {
-    //       query,
-    //       page,
-    //       count: 10,
-    //     }
-    //   });
+    do {
+      console.log(`Fetching page ${page} for query: ${query}`);
+      const response = await axios.get("https://slack.com/api/search.messages", {
+        headers: { Authorization: `Bearer ${SLACK_TOKEN}` },
+        params: {
+          query,
+          page,
+          count: 10,
+        }
+      });
 
-    //   if (!response.data.ok) {
-    //     console.error("Slack API Full Response:", response.data);
-    //     throw new Error(`Slack API error: ${response.data.error}`);
-    //   }
+      if (!response.data.ok) {
+        console.error("Slack API Full Response:", response.data);
+        throw new Error(`Slack API error: ${response.data.error}`);
+      }
 
-    //   const matches = response.data.messages.matches || [];
-    //   let messages = matches;
+      const matches = response.data.messages.matches || [];
+      let messages = matches;
 
-    //   console.log("Matches:", matches);
+      console.log("Matches:", matches);
 
-    //   if (!channelName) {
-    //     messages = matches.filter((match) => match.channel.id === channelId);
-    //   }
+      if (!channelName) {
+        messages = matches.filter((match) => match.channel.id === channelId);
+      }
 
-    //   const allMessagesForChannel = messages.map((match) => match.text);
-    //   allMessages = [...allMessages, ...allMessagesForChannel];
+      const allMessagesForChannel = messages.map((match) => match.text);
+      allMessages = [...allMessages, ...allMessagesForChannel];
 
-    //   console.log("All Messages for Channel:", allMessagesForChannel);
+      console.log("All Messages for Channel:", allMessagesForChannel);
 
-    //   page++;
-    // } while (page <= maxPages);
+      page++;
+    } while (page <= maxPages);
   } catch (error) {
     console.error("❌ Error fetching messages:", error.message);
     console.error("Full error:", error);
@@ -224,7 +224,7 @@ const fetchSlackDataUsingQuery = async (query, channelId, channelName) => {
 
   const summary = await summarizeMessages(allMessages);
   console.log("Summary:", summary);
-  return "Sending summary to channel...";
+  return summary;
 };
 
 
