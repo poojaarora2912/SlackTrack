@@ -112,8 +112,8 @@ router.post("/query-summary", async (req, res) => {
     }, {
       headers: {
         "Content-Type": "application/json",
-        timeout: 5000,
       },
+      timeout: 5000,
     });
     
     console.log("Slack Response Data:", slackResponse.data);    
