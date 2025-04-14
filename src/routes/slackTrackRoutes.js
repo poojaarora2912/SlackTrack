@@ -87,6 +87,53 @@ router.post("/summary", async (req, res) => {
 //   }
 // });
 
+router.post("/trigger-slack-response", (req, res) => {
+  const { responseUrl, message } = req.body;
+
+  console.log("Triggering Slack Response:", responseUrl. message);
+
+  const slackPayload = JSON.stringify({
+    response_type: "in_channel",
+    text: message,
+  });
+
+  console.log("Slack Payload:", slackPayload);
+
+  const url = new URL(responseUrl);
+
+  console.log("Parsed URL:", url);
+
+  const options = {
+    hostname: url.hostname,
+    path: url.pathname + url.search,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(slackPayload),
+    },
+  };
+
+  console.log("Slack Request Options:", options);
+
+  const slackReq = https.request(options, (slackRes) => {
+    let data = "";
+    slackRes.on("data", (chunk) => (data += chunk));
+    slackRes.on("end", () => {
+      console.log("✅ Message sent to Slack:", data);
+      res.status(200).json({ success: true });
+    });
+  });
+
+  slackReq.on("error", (e) => {
+    console.error("❌ Error sending to Slack:", e.message);
+    res.status(500).json({ success: false, error: e.message });
+  });
+
+  slackReq.write(slackPayload);
+  slackReq.end();
+});
+
+
 router.post("/query-summary", async (req, res) => {
   console.log("Received Request:", req.body);
   const query = req.body.text;
@@ -104,27 +151,24 @@ router.post("/query-summary", async (req, res) => {
     text: `🕐 Processing your query: *${query}*... You'll get the summary shortly.`,
   });
 
-  fetchSlackDataUsingQuery(query, channelId, channelName)
-    .then((summary) => {
-      
-      console.log("Query-Based Summary Fetched:", summary);
-      console.log("Posting summary to Slack...");
-      console.log("Response URL:", responseUrl);
+  try {
+    const summary = fetchSlackDataUsingQuery(query, channelId, channelName);
+    const message = "done processing!";
 
-      axios.post(responseUrl, {
-        response_type: "in_channel",
-        text: `📊 Here's the summary for *${query}*:\n\n${summary}`,
-      }, {
-        headers: { "Content-Type": "application/json" },
-      }).then(() => {
-        console.log("✅ Successfully posted summary to Slack");
-      }).catch((err) => {
-        console.error("❌ Failed to post to Slack:", err.message);
-      });
-    })
-    .catch((err) => {
-      console.error("❌ Error in fetchSlackDataUsingQuery:", err.message);
+    console.log("ready to send message");
+
+    await fetch(`/trigger-slack-response`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ responseUrl, message }),
     });
+
+    console.log("sent message to slack");
+    
+  } catch (error) {
+    console.error("❌ Failed to trigger Slack response:", error.message);
+  }
+
 
   // try {
   //   console.log("try block executed!")
